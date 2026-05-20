@@ -61,18 +61,21 @@ public class LightScript : MonoBehaviour
         Debug.Log("On State: Enter");
         _lightComponent.enabled = true;
         _lightComponent.intensity = 4f;
+        Debug.Log($"In enter state State = {_currentState}");
 
         //State loop
-        while(_currentState == LightState.On)
+        while (_currentState == LightState.On)
         {
-            //forces corountine to wait for end of frame
-            //required for loop to not break
-            //quirk of coroutines
-            yield return null;
+            Debug.Log($"In Loop State = {_currentState}");
             if (Input.GetMouseButton(0))
             {
                 _currentState = LightState.Off;
             }
+            //forces corountine to wait for end of frame
+            //required for loop to not break
+            //quirk of coroutines
+            yield return null;
+            
         }
 
         //State termination/cleanup
@@ -101,7 +104,7 @@ public class LightScript : MonoBehaviour
             }
         }
 
-        Debug.Log("Off State Exit");
+        Debug.Log("Off State: Exit");
         ChangeState(_currentState);
     }
 
