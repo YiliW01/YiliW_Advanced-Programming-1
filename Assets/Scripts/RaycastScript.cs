@@ -1,4 +1,3 @@
-using System.Security.Cryptography;
 using UnityEngine;
 
 public class RaycastScript : MonoBehaviour
@@ -8,21 +7,35 @@ public class RaycastScript : MonoBehaviour
     [SerializeField]
     private float raycastDistance = 1000f;
 
+    [SerializeField]
+    LayerMask raycastMask;
+
+
     public void Awake()
     {
-        player = FindFirstObjectByType<PlayerScript>();
+        player = GetComponent<PlayerScript>();
     }
 
-    private void Update()
+    // Update is called once per frame
+    void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
         {
             Vector2 v = Input.mousePosition;
-            Debug.Log(v);
-            RaycastHit hit;
-            if (Physics.Raycast(Camera.main.transform.position, Camera.main.ScreenToWorldPoint(v), out hit, raycastDistance))
-            {
 
+            Ray myRaycast;
+
+            myRaycast = Camera.main.ScreenPointToRay(v);
+
+            RaycastHit hit;
+
+            if (Physics.Raycast(myRaycast, out hit, raycastDistance, raycastMask))
+            {
+                Debug.Log(hit.transform.name);
+
+                Debug.Log(hit.point);
+
+                player.Move(hit.point);
             }
         }
     }
