@@ -17,6 +17,7 @@ public class PlayerScript : MonoBehaviour
         NavMeshPath path = new NavMeshPath();
         // first calc to our destination without moving the navAgent
         navAgent.CalculatePath(pos, path);
+        navAgent.speed = 5f;
 
         // Based on the result of path calc, decide if we move navAgent
         switch (path.status)

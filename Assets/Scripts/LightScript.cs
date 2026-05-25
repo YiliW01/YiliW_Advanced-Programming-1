@@ -61,26 +61,26 @@ public class LightScript : MonoBehaviour
         Debug.Log("On State: Enter");
         _lightComponent.enabled = true;
         _lightComponent.intensity = 4f;
-        Debug.Log($"In enter state State = {_currentState}");
+        
 
         //State loop
         while (_currentState == LightState.On)
         {
-            Debug.Log($"In Loop State = {_currentState}");
-            if (Input.GetMouseButton(0))
+            yield return null;
+
+            if (Input.GetMouseButtonDown(0))
             {
                 _currentState = LightState.Off;
             }
             //forces corountine to wait for end of frame
             //required for loop to not break
             //quirk of coroutines
-            yield return null;
             
         }
 
         //State termination/cleanup
         Debug.Log("On State: Exit");
-        //Our _currentState var was just changed to ff in the code, so we need to call ChangeState on our light
+        //Our _currentState var was just changed to off in the code, so we need to call ChangeState on our light
         //this will move us to the OFF State
         ChangeState(_currentState);
         //Corountine ends
@@ -97,10 +97,14 @@ public class LightScript : MonoBehaviour
         while (_currentState == LightState.Off)
         {
             yield return null;
+
             if (Input.GetMouseButtonDown(0))
             {
                 //Change state to On
-                _currentState = LightState.On;
+                var chance = Random.Range(0f, 100f);
+                if (chance >= 50f) { _currentState = LightState.On; }
+                else { _currentState = LightState.Flickering; }
+                
             }
         }
 
@@ -110,6 +114,27 @@ public class LightScript : MonoBehaviour
 
     IEnumerator FlickeringState()
     {
-        yield return null;
+        Debug.Log("Flickering State: Enter");
+        _lightComponent.intensity = 4f;
+
+        //State loop
+        while (_currentState == LightState.Flickering)
+        {
+            _lightComponent.enabled = true;
+
+            yield return new WaitForSeconds(Random.Range(1f, 3f));
+
+            _lightComponent.enabled = false;
+
+            yield return new WaitForSeconds(0.1f);
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                _currentState = LightState.Off;
+            }
+        }
+
+        Debug.Log("Flickering State: Exit");
+        ChangeState(_currentState);
     }
 }
